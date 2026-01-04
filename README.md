@@ -7,7 +7,7 @@ A secure, role-based academic management system designed for the **Licence of Sc
 
 ## 👥 Authors
 * **Rayan Akioud** - [GitHub Profile](https://github.com/rayanakioud7)
-* **Classmate Name** - [GitHub Profile](https://github.com/HIS_USERNAME)
+* **Mohammed Sabri** - [GitHub Profile](https://github.com/MohammeedSabri)
 
 ## 🌟 Key Features
 
