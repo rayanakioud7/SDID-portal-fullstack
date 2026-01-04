@@ -12,51 +12,36 @@ const LoginPage = () => {
   const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+  e.preventDefault();
+  setIsLoading(true);
+  setError('');
 
-    try {
-      // Use the auth service for login
-      const userData = await authService.login(email, password);
-      
-      // Login successful - redirect based on role
-      if (userData.role === 'ADMINISTRATEUR') {
-        navigate('/admin-dashboard');
-      } else if (userData.role === 'INSTRUCTEUR') {
-        navigate('/professor-dashboard');
-      } else {
-        navigate('/modules');
-      }
-      
-    } catch (error) {
-      console.error("Login Error:", error);
-      
-      // Handle specific error cases
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        if (error.response.status === 403) {
-          setError("⚠️ Access Denied: " + (error.response.data?.message || "Your account is pending approval or has been suspended"));
-        } else if (error.response.status === 401) {
-          setError("❌ Invalid email or password");
-        } else if (error.response.status === 404) {
-          setError("❌ User not found");
-        } else if (error.response.status === 422) {
-          setError("❌ Validation error: " + (error.response.data?.message || "Please check your input"));
-        } else {
-          setError("❌ Error: " + (error.response.data?.message || "Login failed"));
-        }
-      } else if (error.request) {
-        // The request was made but no response was received
-        setError("⚠️ Could not connect to server. Please check your internet connection.");
-      } else {
-        // Something happened in setting up the request
-        setError("❌ An unexpected error occurred: " + error.message);
-      }
-    } finally {
-      setIsLoading(false);
+  try {
+    // 1. Perform Login
+    const userData = await authService.login(email, password);
+    
+    // 🚨 THE CRITICAL FIX: Trigger the Navbar update
+    // This tells all components listening to 'storage' to refresh their user state
+    window.dispatchEvent(new Event("storage"));
+
+    // 2. Redirect based on role (Verify these match your Backend Enum exactly)
+    if (userData.role === 'ADMINISTRATEUR') {
+      navigate('/admin-dashboard');
+    } else if (userData.role === 'INSTRUCTEUR') {
+      navigate('/professor-dashboard');
+    } else if (userData.role === 'ETUDIANT') {
+      navigate('/modules');
+    } else {
+      // Fallback if role is unexpected
+      navigate('/');
     }
-  };
+    
+  } catch (error) {
+    // ... your existing error handling ...
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4 font-sans relative overflow-hidden">

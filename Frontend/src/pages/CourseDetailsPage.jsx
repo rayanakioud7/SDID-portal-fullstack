@@ -8,7 +8,7 @@ import Navbar from '../components/Navbar';
 const CourseDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('materials');
+  const [activeTab, setActiveTab] = useState('assignments'); 
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
@@ -260,42 +260,19 @@ const CourseDetailsPage = () => {
 
         {/* Tabs */}
         <div className="flex space-x-8 mb-8 border-b border-white/10 pb-1 overflow-x-auto">
-          {['materials', 'assignments', 'discussion'].map((tab) => (
+          {['assignments', 'discussion'].map((tab) => (
             <button 
               key={tab} 
               onClick={() => setActiveTab(tab)} 
               className={`pb-3 text-lg font-medium transition-all relative capitalize whitespace-nowrap ${activeTab === tab ? 'text-cyan-400' : 'text-gray-400 hover:text-white'}`}
             >
-              {tab === 'discussion' ? 'Class Stream' : tab.replace('materials', 'Course Materials').replace('assignments', 'Assignments')}
+              {tab === 'discussion' ? 'Class Stream' : 'Assignments'}
               {activeTab === tab && <span className="absolute bottom-[-1px] left-0 w-full h-0.5 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.6)]"></span>}
             </button>
           ))}
         </div>
 
         <div className="min-h-[300px] animate-fadeIn">
-          {/* Materials Tab */}
-          {activeTab === 'materials' && (
-            <div className="space-y-4">
-              {materials.length > 0 ? materials.map((file) => (
-                <div key={file.id} className="group relative flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-slate-800/40 border border-white/5 rounded-xl hover:bg-slate-800/60 transition-all hover:border-cyan-500/30">
-                  <div className="flex items-center gap-4 mb-4 sm:mb-0 relative z-10">
-                    <div className="w-12 h-12 rounded-lg bg-slate-900 border border-white/10 flex items-center justify-center text-cyan-400">
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-100">{file.name}</h4>
-                      <p className="text-xs text-gray-500 uppercase tracking-wide">{file.date} • {file.size}</p>
-                    </div>
-                  </div>
-                  <button className="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium">Download</button>
-                </div>
-              )) : (
-                <div className="text-center py-20 text-gray-500 italic">
-                  No course materials available yet. Check back later!
-                </div>
-              )}
-            </div>
-          )}
 
           {/* Assignments Tab */}
           {activeTab === 'assignments' && (

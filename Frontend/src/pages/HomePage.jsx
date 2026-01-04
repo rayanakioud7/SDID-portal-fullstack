@@ -74,19 +74,26 @@ function HomePage() {
   const [typedText, setTypedText] = useState("");
   const fullText = "Meets Innovation";
 
-  // --- AUTH CHECKER ---
-  // Set this to TRUE to see it go to Modules
-  // Set this to FALSE to see it go to Login
-  const isUserLoggedIn = false; 
+const handleProtectedNavigation = (destination) => {
 
-  const handleProtectedNavigation = (destination) => {
-    console.log("Checking Login Status:", isUserLoggedIn); // Debug log
-    if (isUserLoggedIn) {
-      navigate(destination);
-    } else {
-      navigate('/login');
+  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+  
+  console.log("Checking Login Status for Home Navigation:", storedUser);
+
+  if (storedUser) {
+    if (storedUser.role === 'INSTRUCTEUR') {
+      navigate('/professor-dashboard');
+    } 
+    else if (storedUser.role === 'ADMINISTRATEUR') {
+      navigate('/admin-dashboard');
     }
-  };
+    else {
+      navigate(destination);
+    }
+  } else {
+    navigate('/login');
+  }
+};
 
   useEffect(() => {
     let index = 0;

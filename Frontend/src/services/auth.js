@@ -32,27 +32,31 @@ const authService = {
     try {
       const response = await api.post('/auth/login', { email, password });
       
-      if (response.data && response.data.token) {
-        // Store user data in localStorage
+      if (response.data) {
+        // 1. Store user data in localStorage
         localStorage.setItem('user', JSON.stringify(response.data));
-        localStorage.setItem('token', response.data.token);
         
-        // Set default authorization header
-        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+        // 2. Handle token if your backend provides one
+        if (response.data.token) {
+           localStorage.setItem('token', response.data.token);
+           api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+        }
+        
+        // 🚨 THE CRITICAL SYNC FIX:
+        // This manually triggers the 'storage' event so the Navbar.jsx 
+        // listener catches the change immediately without a page refresh.
+        window.dispatchEvent(new Event("storage"));
       }
       
       return response.data;
     } catch (error) {
       console.error('Login error:', error);
-      
-      // Enhance error object with status if available
       if (error.response) {
         const enhancedError = new Error(error.response.data?.message || 'Login failed');
         enhancedError.status = error.response.status;
         enhancedError.data = error.response.data;
         throw enhancedError;
       }
-      
       throw error;
     }
   },
@@ -62,6 +66,9 @@ const authService = {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     delete api.defaults.headers.common['Authorization'];
+    
+    // Notify Navbar to show "Log In/Sign Up" again
+    window.dispatchEvent(new Event("storage"));
   },
 
   // Get current user
@@ -73,37 +80,16 @@ const authService = {
     return null;
   },
 
-  // Get auth token
-  getToken() {
-    return localStorage.getItem('token');
-  },
-
-  // Check if user is authenticated
-  isAuthenticated() {
-    return !!localStorage.getItem('token');
-  },
-
   // Check if user has specific role
   hasRole(role) {
     const user = this.getCurrentUser();
     return user && user.role === role;
   },
 
-  // Check if user is admin
-  isAdmin() {
-    return this.hasRole('ADMINISTRATEUR');
-  },
-
-  // Check if user is instructor
-  isInstructor() {
-    return this.hasRole('INSTRUCTEUR');
-  },
-
-  // Check if user is student
-  isStudent() {
-    const user = this.getCurrentUser();
-    return user && !['ADMINISTRATEUR', 'INSTRUCTEUR'].includes(user.role);
-  },
+  // Role Checks
+  isAdmin() { return this.hasRole('ADMINISTRATEUR'); },
+  isInstructor() { return this.hasRole('INSTRUCTEUR'); },
+  isStudent() { return this.hasRole('ETUDIANT'); },
 
   // API instance for other components to use
   api,
