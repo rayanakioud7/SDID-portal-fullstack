@@ -14,6 +14,7 @@ public class CourseService {
 
     @Autowired
     private CourseRepository courseRepository;
+    
     @Autowired
     private UtilisateurRepository utilisateurRepository;
 
@@ -21,7 +22,6 @@ public class CourseService {
         Utilisateur instructeur = utilisateurRepository.findById(instructeurId)
             .orElseThrow(() -> new RuntimeException("Instructeur not found"));
 
-        // checks if user is an Instructor
         if (instructeur.getRole() != Role.INSTRUCTEUR) {
             throw new RuntimeException("Error: Only Instructors can create courses.");
         }
@@ -32,5 +32,14 @@ public class CourseService {
 
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
+    }
+    
+    public List<Course> getCoursesByInstructor(Long id) {
+         return courseRepository.findByInstructeurId(id); 
+    }
+    
+    public Course getCourseById(Long id) {
+    return courseRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Course not found with id: " + id));
     }
 }

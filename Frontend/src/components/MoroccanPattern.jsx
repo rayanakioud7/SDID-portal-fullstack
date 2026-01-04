@@ -1,4 +1,3 @@
-// src/components/MoroccanPattern.jsx
 import React from 'react';
 
 const MoroccanPattern = () => {

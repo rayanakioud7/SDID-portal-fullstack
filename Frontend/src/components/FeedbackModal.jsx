@@ -1,4 +1,3 @@
-// src/components/FeedbackModal.jsx
 import React from 'react';
 
 const FeedbackModal = ({ isOpen, onClose, assignment }) => {

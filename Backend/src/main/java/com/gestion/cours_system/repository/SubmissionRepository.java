@@ -15,4 +15,7 @@ public interface SubmissionRepository extends JpaRepository<Submission, Long> {
     
     // Get all submissions made by a specific student, For the Student to see their grades
     List<Submission> findByEtudiantId(Long etudiantId);
+
+
+    List<Submission> findByProjet_Id(Long courseId);
 }

@@ -60,4 +60,12 @@ public class UtilisateurController {
 	public List<Utilisateur> getAllUtilisateurs() {
 		return utilisateurService.getAllUtilisateurs();
 	}
+
+	// GET: /api/users/{id}
+	@GetMapping("/{id}")
+	public ResponseEntity<Utilisateur> getUtilisateurById(@PathVariable Long id) {
+		return utilisateurService.getUtilisateurById(id)
+				.map(ResponseEntity::ok)
+				.orElse(ResponseEntity.notFound().build());
+	}
 }

@@ -1,14 +1,12 @@
-// src/components/SubmitAssignmentModal.jsx
 import React, { useState } from 'react';
 
-const SubmitAssignmentModal = ({ isOpen, onClose, assignmentTitle }) => {
+const SubmitAssignmentModal = ({ isOpen, onClose, assignment, studentId, onSuccess }) => {
   const [file, setFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  // If the modal is closed, don't render anything
-  if (!isOpen) return null;
+  if (!isOpen || !assignment) return null;
 
   // --- Drag & Drop Handlers ---
   const handleDragOver = (e) => {
@@ -34,29 +32,55 @@ const SubmitAssignmentModal = ({ isOpen, onClose, assignmentTitle }) => {
     }
   };
 
-  // --- Simulate Upload Logic ---
-  const handleSubmit = () => {
-    if (!file) return;
+const handleSubmit = async () => {
+  if (!file || !studentId || !assignment) return;
 
-    setIsUploading(true);
-    // Simulate a progress bar (Replace this later with real Backend API logic)
-    let progress = 0;
-    const interval = setInterval(() => {
-      progress += 10;
-      setUploadProgress(progress);
-      if (progress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          setIsUploading(false);
-          onClose(); // Close modal on success
-          alert("Project submitted successfully!"); 
-        }, 500);
+  setIsUploading(true);
+  
+  try {
+    // 1. Upload the file
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    const uploadResponse = await fetch(
+      `${import.meta.env.VITE_API_URL}/upload`,
+      {
+        method: 'POST',
+        body: formData,
       }
-    }, 200);
-  };
+    );
+
+    if (!uploadResponse.ok) {
+      throw new Error('File upload failed');
+    }
+    
+    const fileUrl = await uploadResponse.text();
+    
+    // 2. Submit the submission with the file URL
+    const submitResponse = await fetch(
+      `${import.meta.env.VITE_API_URL}/submissions/student/${studentId}/project/${assignment.id}?fichierUrl=${encodeURIComponent(fileUrl)}`,
+      {
+        method: 'POST',
+      }
+    );
+
+    if (submitResponse.ok) {
+      alert("Project submitted successfully!");
+      if (onSuccess) onSuccess();
+      onClose();
+      setFile(null);
+    } else {
+      throw new Error('Failed to submit project');
+    }
+  } catch (error) {
+    console.error('Error submitting project:', error);
+    alert(error.message || 'Failed to submit project');
+  } finally {
+    setIsUploading(false);
+  }
+};
 
   return (
-    // Backdrop (Dark overlay)
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div 
         className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity"
@@ -70,7 +94,6 @@ const SubmitAssignmentModal = ({ isOpen, onClose, assignmentTitle }) => {
         <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
           <h3 className="text-xl font-bold text-white">Submit Assignment</h3>
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
-            {/* Close X Icon */}
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
           </button>
         </div>
@@ -78,7 +101,7 @@ const SubmitAssignmentModal = ({ isOpen, onClose, assignmentTitle }) => {
         {/* Body Content */}
         <div className="p-6">
           <p className="text-blue-200 mb-4 text-sm">
-            Uploading for: <span className="font-semibold text-white">{assignmentTitle}</span>
+            Uploading for: <span className="font-semibold text-white">{assignment.title}</span>
           </p>
 
           {/* Drag & Drop Zone */}
@@ -98,15 +121,14 @@ const SubmitAssignmentModal = ({ isOpen, onClose, assignmentTitle }) => {
                 id="file-upload" 
                 className="hidden" 
                 onChange={handleFileSelect}
-                // Optional: Restrict file types
-                accept=".pdf,.zip,.rar,.doc,.docx" 
+                accept=".pdf,.zip,.rar,.doc,.docx,.ppt,.pptx,.txt" 
               />
               <label htmlFor="file-upload" className="cursor-pointer w-full h-full flex flex-col items-center">
                 <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-4 text-blue-400">
                   <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
                 </div>
                 <p className="text-lg font-medium text-white mb-1">Click to upload or drag and drop</p>
-                <p className="text-sm text-gray-400">PDF, ZIP, or DOCX (Max 10MB)</p>
+                <p className="text-sm text-gray-400">PDF, ZIP, DOCX, PPTX (Max 10MB)</p>
               </label>
             </div>
           )}
@@ -123,14 +145,13 @@ const SubmitAssignmentModal = ({ isOpen, onClose, assignmentTitle }) => {
                   <p className="text-xs text-gray-400">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                 </div>
               </div>
-              {/* Remove File Button */}
               <button onClick={() => setFile(null)} className="text-gray-400 hover:text-red-400 p-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
           )}
 
-          {/* Progress Bar (Only visible during upload) */}
+          {/* Progress Bar */}
           {isUploading && (
             <div className="mt-6">
               <div className="flex justify-between text-sm mb-1">
@@ -165,10 +186,9 @@ const SubmitAssignmentModal = ({ isOpen, onClose, assignmentTitle }) => {
                 : 'bg-blue-600 hover:bg-blue-500 text-white hover:scale-105'
             }`}
           >
-            {isUploading ? 'Processing...' : 'Submit Project'}
+            {isUploading ? 'Submitting...' : 'Submit Project'}
           </button>
         </div>
-
       </div>
     </div>
   );

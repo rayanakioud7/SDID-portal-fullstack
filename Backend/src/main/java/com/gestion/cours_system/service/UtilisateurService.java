@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder; // Import this
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UtilisateurService {
@@ -44,5 +45,9 @@ public class UtilisateurService {
 
     public List<Utilisateur> getAllUtilisateurs() {
         return utilisateurRepository.findAll();
+    }
+
+    public Optional<Utilisateur> getUtilisateurById(Long id) {
+        return utilisateurRepository.findById(id);
     }
 }

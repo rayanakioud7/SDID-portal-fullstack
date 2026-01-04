@@ -5,6 +5,8 @@ import com.gestion.cours_system.repository.*; // Import all repos
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SubmissionService {
@@ -43,4 +45,15 @@ public class SubmissionService {
         
         return submissionRepository.save(submission);
     }
+
+    public List<Submission> getSubmissionsByStudentAndCourse(Long studentId, Long courseId) {
+    return submissionRepository.findByEtudiantId(studentId).stream()
+        .filter(submission -> submission.getProjet().getCours().getId().equals(courseId))
+        .collect(Collectors.toList());
+    }
+
+    public List<Submission> getSubmissionsByStudent(Long studentId) {
+        return submissionRepository.findByEtudiantId(studentId);
+    }
+
 }

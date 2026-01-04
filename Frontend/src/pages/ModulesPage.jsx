@@ -1,27 +1,65 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MoroccanPattern from '../components/MoroccanPattern'; 
 import Navbar from '../components/Navbar';
 
 const ModulesPage = () => {
   const navigate = useNavigate();
+  const [modules, setModules] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
 
-  // Mock Data
-  const modules = [
-    { id: 1, title: "Data Warehousing", instructor: "Prof. El Amrani", count: "4 Files", icon: "database", color: "text-cyan-400", bg: "bg-cyan-500/10" },
-    { id: 2, title: "Java Programming", instructor: "Prof. Sarah J.", count: "12 Files", icon: "code", color: "text-blue-400", bg: "bg-blue-500/10" },
-    { id: 3, title: "Machine Learning", instructor: "Prof. Tazi", count: "8 Files", icon: "brain", color: "text-purple-400", bg: "bg-purple-500/10" },
-    { id: 4, title: "Big Data Analytics", instructor: "Prof. Bennani", count: "5 Files", icon: "server", color: "text-indigo-400", bg: "bg-indigo-500/10" },
-  ];
+  // Fetch user and courses
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser && storedUser.role === 'ETUDIANT') {
+      setUser(storedUser);
+      fetchStudentCourses();
+    } else {
+      navigate('/login');
+    }
+  }, [navigate]);
+
+  const fetchStudentCourses = async () => {
+    try {
+      // Assuming students can see all courses (or you need to implement enrollment)
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/courses`);
+      if (response.ok) {
+        const coursesData = await response.json();
+        // Map backend courses to frontend format
+        const formattedModules = coursesData.map((course, index) => ({
+          id: course.id,
+          title: course.titre,
+          instructor: course.instructeur?.nom || 'Unknown Instructor',
+          description: course.description,
+          count: "0 Files", // You might want to fetch actual file count
+          icon: ["database", "code", "brain", "server"][index % 4],
+          color: ["text-cyan-400", "text-blue-400", "text-purple-400", "text-indigo-400"][index % 4],
+          bg: ["bg-cyan-500/10", "bg-blue-500/10", "bg-purple-500/10", "bg-indigo-500/10"][index % 4],
+          code: course.code
+        }));
+        setModules(formattedModules);
+      }
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center">
+        <div className="text-cyan-400">Loading courses...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 font-sans text-white selection:bg-cyan-500 selection:text-white relative overflow-hidden">
       
-      {/*  Zellij */}
       <MoroccanPattern rotate={false} />
-
-      {/* 3. NAVBAR */}
-      <Navbar />
+      <Navbar role="student" />
       
       <div className="relative z-10 container mx-auto px-6 pt-12 pb-20">
         
@@ -37,7 +75,7 @@ const ModulesPage = () => {
 
         {/* The Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {modules.map((module) => (
+          {modules.length > 0 ? modules.map((module) => (
             <div 
               key={module.id}
               onClick={() => navigate(`/course/${module.id}`)}
@@ -60,18 +98,24 @@ const ModulesPage = () => {
               <div>
                  <h3 className="text-xl font-bold mb-1 text-white group-hover:text-cyan-300 transition-colors">{module.title}</h3>
                  <p className="text-sm text-blue-200/50">{module.instructor}</p>
+                 <p className="text-xs text-gray-500 mt-2 line-clamp-2">{module.description}</p>
               </div>
               
               {/* Card Footer: "Open" Link */}
               <div className="mt-8 flex items-center justify-between border-t border-white/5 pt-4">
-                 <span className="text-xs text-gray-500 font-mono">CODE: M-{module.id}0{module.id}</span>
+                 <span className="text-xs text-gray-500 font-mono">CODE: {module.code}</span>
                  <span className="text-sm text-cyan-400 font-semibold group-hover:translate-x-1 transition-transform flex items-center gap-1">
                     Open Module <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
                  </span>
               </div>
 
             </div>
-          ))}
+          )) : (
+            <div className="col-span-3 text-center py-20">
+              <div className="text-gray-400 text-lg mb-4">No courses available yet</div>
+              <p className="text-gray-500">Check back later or contact your administrator</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

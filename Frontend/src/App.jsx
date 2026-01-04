@@ -8,6 +8,7 @@ import ProfessorDashboard from './pages/ProfessorDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import UserProfilePage from './pages/UserProfilePage';
 import SettingsPage from './pages/SettingsPage';
+import InstructorCoursePage from './pages/InstructorCoursePage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <Route path="/admin-dashboard" element={<AdminDashboard />} />
       <Route path="/profile" element={<UserProfilePage />} />
       <Route path="/settings" element={<SettingsPage />} />
+      <Route path="/instructor/course/:id" element={<InstructorCoursePage />} />
     </Routes>
   );
 }

@@ -15,7 +15,6 @@ public class CourseController {
     private CourseService courseService;
 
     // POST: Create a course (Must provide Instructor ID in URL)
-    // Example: POST /api/courses/instructeur/1
     @PostMapping("/instructeur/{instructeurId}")
     public Course createCourse(@RequestBody Course course, @PathVariable Long instructeurId) {
         return courseService.createCourse(course, instructeurId);
@@ -25,5 +24,17 @@ public class CourseController {
     @GetMapping
     public List<Course> getAllCourses() {
         return courseService.getAllCourses();
+    }
+
+    // GET: Get only courses taught by a specific instructor
+    @GetMapping("/instructeur/{instructeurId}")
+    public List<Course> getCoursesByInstructor(@PathVariable Long instructeurId) {
+        return courseService.getCoursesByInstructor(instructeurId);
+    }
+
+    // NEW: Get a single course by ID
+    @GetMapping("/{courseId}")
+    public Course getCourseById(@PathVariable Long courseId) {
+        return courseService.getCourseById(courseId);
     }
 }

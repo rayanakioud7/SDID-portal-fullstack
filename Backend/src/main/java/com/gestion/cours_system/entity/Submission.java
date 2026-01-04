@@ -6,10 +6,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-//Une SoumissionÉtudiant est faite par un Étudiant pour un Projet/Devoir/Thèse. prevent duplicate submissions from the same student for the same project 
 @Table(uniqueConstraints = {
-	    @UniqueConstraint(columnNames = {"etudiant_id", "projet_id"})
-	})
+    @UniqueConstraint(columnNames = {"etudiant_id", "projet_id"})
+})
 public class Submission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
