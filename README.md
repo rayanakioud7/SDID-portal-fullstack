@@ -5,6 +5,10 @@ A secure, role-based academic management system designed for the **Licence of Sc
 ![Project Status](https://img.shields.io/badge/Status-In%20Development-orange)
 ![Tech Stack](https://img.shields.io/badge/Stack-Spring%20Boot%20%2B%20React-blue)
 
+## 👥 Authors
+* **Rayan Akioud** - [GitHub Profile](https://github.com/rayanakioud7)
+* **Classmate Name** - [GitHub Profile](https://github.com/HIS_USERNAME)
+
 ## 🌟 Key Features
 
 ### 🛡️ Security & Roles
