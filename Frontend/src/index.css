@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Base Styles */
+body {
+  background-color: #f3f4f6;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Define the "float up" animation */
+@keyframes floatUp {
+    0% {
+        transform: translateY(110vh) rotate(0deg) scale(0.8);
+        opacity: 0;
+    }
+    10% {
+        opacity: var(--target-opacity, 0.2); /* Fade in quickly */
+    }
+    90% {
+        opacity: var(--target-opacity, 0.2); /* Stay visible */
+    }
+    100% {
+        /* End above the top of the screen, rotated, and slightly larger */
+        transform: translateY(-20vh) rotate(360deg) scale(1.2);
+        opacity: 0; /* Fade out at the end */
+    }
+}
+
+/* A class to apply the animation */
+.animate-float-up {
+    /* Use linear timing so they move at a constant speed */
+    animation: floatUp linear infinite;
+}
