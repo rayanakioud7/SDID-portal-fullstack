@@ -8,6 +8,7 @@ A secure, role-based academic management system designed for the **Licence of Sc
 ## Authors
 * **Rayan Akioud** - [GitHub Profile](https://github.com/rayanakioud7)
 * **Mohammed Sabri** - [GitHub Profile](https://github.com/MohammeedSabri)
+* **Anas Joundy**
 
 ## Overview
 The **SDID Portal** is a centralized Learning Management System (LMS) designed specifically for Data Science students and professors. It bridges the gap between academic management and modern UX, featuring a unique "Cyber-Moroccan" aesthetic that blends traditional Zellij patterns with futuristic glassmorphism and real-time backend synchronization.
@@ -79,4 +80,4 @@ The **SDID Portal** is a centralized Learning Management System (LMS) designed s
     ```
 
 ---
-*Built by Rayan Akioud and Mohammed Sabri - SDID Student 2026*
+*Built by Rayan Akioud, Mohammed Sabri and Anas Joundy - SDID Students 2026*

@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom"; 
-import MoroccanPattern from "../components/MoroccanPattern"; 
+import { Link, useNavigate } from "react-router-dom";
+import MoroccanPattern from "../components/MoroccanPattern";
 import Navbar from '../components/Navbar';
 
 // --- 1. 3D TILT COMPONENT ---
@@ -29,7 +29,7 @@ const TiltCard = ({ children, className, glowColor = "cyan" }) => {
   };
 
   return (
-    <div 
+    <div
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -38,7 +38,7 @@ const TiltCard = ({ children, className, glowColor = "cyan" }) => {
         transform: `perspective(1000px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale3d(1, 1, 1)`,
       }}
     >
-      <div 
+      <div
         className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500"
         style={{
           background: `radial-gradient(400px circle at ${rotation.y * 10 + 50}% ${rotation.x * -10 + 50}%, ${glowColor === 'cyan' ? 'rgba(34,211,238,0.1)' : 'rgba(59,130,246,0.1)'}, transparent 40%)`,
@@ -74,26 +74,26 @@ function HomePage() {
   const [typedText, setTypedText] = useState("");
   const fullText = "Meets Innovation";
 
-const handleProtectedNavigation = (destination) => {
+  // --- BRIDGE TO BACKEND (Keep this exactly as is) ---
+  const handleProtectedNavigation = (destination) => {
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
 
-  const storedUser = JSON.parse(localStorage.getItem("user") || "null");
-  
-  console.log("Checking Login Status for Home Navigation:", storedUser);
+    console.log("Checking Login Status for Home Navigation:", storedUser);
 
-  if (storedUser) {
-    if (storedUser.role === 'INSTRUCTEUR') {
-      navigate('/professor-dashboard');
-    } 
-    else if (storedUser.role === 'ADMINISTRATEUR') {
-      navigate('/admin-dashboard');
+    if (storedUser) {
+      if (storedUser.role === 'INSTRUCTEUR') {
+        navigate('/professor-dashboard');
+      }
+      else if (storedUser.role === 'ADMINISTRATEUR') {
+        navigate('/admin-dashboard');
+      }
+      else {
+        navigate(destination);
+      }
+    } else {
+      navigate('/login');
     }
-    else {
-      navigate(destination);
-    }
-  } else {
-    navigate('/login');
-  }
-};
+  };
 
   useEffect(() => {
     let index = 0;
@@ -126,19 +126,22 @@ const handleProtectedNavigation = (destination) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 relative overflow-hidden font-sans text-white flex flex-col">
-      
+
       {/* Backgrounds */}
       <MoroccanPattern rotate={true} />
       <div className="absolute inset-0 overflow-hidden z-0">
         {items.map((item) => <FloatingItem key={item.id} style={item.style} type={item.type} />)}
       </div>
 
-      {/* Navbar */}
+      {/* Navbar - Kept intact */}
       <Navbar />
-       
-      {/* Main Content */}
-      <main className="relative z-10 container mx-auto px-6 flex-grow flex flex-col justify-center items-center text-center -mt-10">
-        
+
+      {/* 🚀 FIX APPLIED HERE: 
+         1. Removed '-mt-10' (Negative margin was causing the overlap)
+         2. Added 'pt-12' (Padding Top) to push content down safely
+      */}
+      <main className="relative z-10 container mx-auto px-6 flex-grow flex flex-col justify-center items-center text-center pt-12">
+
         <h1 className="text-6xl md:text-8xl font-extrabold mb-8 tracking-tight">
           Data Science <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">
@@ -148,26 +151,25 @@ const handleProtectedNavigation = (destination) => {
         </h1>
 
         <p className="text-xl text-blue-100/60 max-w-2xl mb-16 font-light leading-relaxed">
-           The intelligent workspace for SDID students. 
-           Access your curriculum, run algorithms, and track real-time analytics.
+          The intelligent workspace for SDID students.
+          Access your curriculum, submit projects, and track academic performance.
         </p>
 
-        {/* --- THE 3 PILLARS --- */}
+        {/* --- THE 3 PILLARS (Navigation Logic Preserved) --- */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
-          
+
           {/* Card 1: MODULES */}
-          {/* NOTE: We use DIV here, not Link. The onClick handles the routing. */}
           <div onClick={() => handleProtectedNavigation('/modules')} className="block h-full cursor-pointer">
             <TiltCard className="h-full p-8 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl group hover:border-cyan-500/50 transition-colors">
               <div className="flex flex-col items-center">
                 <div className="h-12 w-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform text-cyan-400">
-                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
                 </div>
                 <h3 className="text-lg font-bold mb-2">Modules</h3>
                 <p className="text-sm text-gray-400 mb-4">Access structured datasets & PDFs.</p>
                 <div className="w-full space-y-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                   <div className="h-2 w-3/4 bg-slate-700 rounded-full mx-auto"></div>
-                   <div className="h-2 w-1/2 bg-slate-700 rounded-full mx-auto"></div>
+                  <div className="h-2 w-3/4 bg-slate-700 rounded-full mx-auto"></div>
+                  <div className="h-2 w-1/2 bg-slate-700 rounded-full mx-auto"></div>
                 </div>
               </div>
             </TiltCard>
@@ -176,14 +178,14 @@ const handleProtectedNavigation = (destination) => {
           {/* Card 2: PROJECTS */}
           <div onClick={() => handleProtectedNavigation('/modules')} className="block h-full cursor-pointer">
             <TiltCard className="h-full p-8 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl group hover:border-blue-500/50 transition-colors">
-               <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center">
                 <div className="h-12 w-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform text-blue-400">
-                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                 </div>
                 <h3 className="text-lg font-bold mb-2">Projects</h3>
                 <p className="text-sm text-gray-400 mb-4">Submit algorithms & pipelines.</p>
                 <div className="w-full bg-black/40 rounded p-3 text-left text-[10px] font-mono text-green-400 opacity-60 group-hover:opacity-100 transition-opacity">
-                   <p>{`> git push origin main`}</p>
+                  <p>{`> git push origin main`}</p>
                 </div>
               </div>
             </TiltCard>
@@ -192,15 +194,15 @@ const handleProtectedNavigation = (destination) => {
           {/* Card 3: ANALYTICS */}
           <div onClick={() => handleProtectedNavigation('/modules')} className="block h-full cursor-pointer">
             <TiltCard className="h-full p-8 bg-slate-900/40 backdrop-blur-md border border-white/10 rounded-2xl group hover:border-purple-500/50 transition-colors">
-               <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center">
                 <div className="h-12 w-12 bg-slate-800 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform text-purple-400">
-                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" /></svg>
                 </div>
                 <h3 className="text-lg font-bold mb-2">Analytics</h3>
                 <p className="text-sm text-gray-400 mb-4">Track your performance trajectory.</p>
                 <div className="flex items-end justify-center gap-1 h-8 w-full opacity-50 group-hover:opacity-100 transition-opacity">
-                   <div className="w-2 bg-purple-500 h-4 rounded-t"></div>
-                   <div className="w-2 bg-purple-500 h-8 rounded-t"></div>
+                  <div className="w-2 bg-purple-500 h-4 rounded-t"></div>
+                  <div className="w-2 bg-purple-500 h-8 rounded-t"></div>
                 </div>
               </div>
             </TiltCard>

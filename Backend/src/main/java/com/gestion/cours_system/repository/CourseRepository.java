@@ -2,7 +2,6 @@ package com.gestion.cours_system.repository;
 
 import com.gestion.cours_system.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
-// THESE ARE THE MISSING IMPORTS CAUSING YOUR ERROR:
 import java.util.List;
 import java.util.Optional;
 

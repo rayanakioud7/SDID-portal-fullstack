@@ -4,7 +4,7 @@ import com.gestion.cours_system.entity.Utilisateur;
 import com.gestion.cours_system.repository.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder; // <--- IMPORT THIS
+import org.springframework.security.crypto.password.PasswordEncoder; 
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class AuthController {
     private UtilisateurRepository utilisateurRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // <--- INJECT THIS BEAN
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -29,10 +29,8 @@ public class AuthController {
         if (userOpt.isPresent()) {
             Utilisateur user = userOpt.get();
             
-            // 🛠️ FIX: Use .matches(raw, encoded) instead of .equals()
             if (passwordEncoder.matches(loginRequest.password, user.getPassword())) {
                 
-                // 1. GATEKEEPER CHECK
                 if (user.getStatus() == com.gestion.cours_system.entity.Status.EN_ATTENTE) {
                     Map<String, String> response = new HashMap<>();
                     response.put("message", "Account is pending Admin approval.");
@@ -45,12 +43,10 @@ public class AuthController {
                     return ResponseEntity.status(403).body(response);
                 }
 
-                // 2. SUCCESS
                 return ResponseEntity.ok(user);
             }
         }
 
-        // Fail
         Map<String, String> error = new HashMap<>();
         error.put("message", "Invalid email or password");
         return ResponseEntity.status(401).body(error);
