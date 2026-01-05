@@ -27,7 +27,6 @@ public class UtilisateurController {
 	@PutMapping("/{id}/status")
 	public ResponseEntity<?> updateStatus(@PathVariable Long id, @RequestParam String status) {
 		try {
-			// Convert String "ACTIF" to Enum Status.ACTIF
 			com.gestion.cours_system.entity.Status newStatus = com.gestion.cours_system.entity.Status.valueOf(status);
 
 			Utilisateur updatedUser = utilisateurService.updateUserStatus(id, newStatus);

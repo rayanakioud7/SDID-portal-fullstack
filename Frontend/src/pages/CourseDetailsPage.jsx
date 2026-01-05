@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import SubmitAssignmentModal from '../components/SubmitAssignmentModal';
 import FeedbackModal from '../components/FeedbackModal';
-import MoroccanPattern from '../components/MoroccanPattern'; 
+import MoroccanPattern from '../components/MoroccanPattern';
 import Navbar from '../components/Navbar';
 
 const CourseDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('assignments'); 
+  const [activeTab, setActiveTab] = useState('assignments');
   const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
@@ -21,7 +21,6 @@ const CourseDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  // Initialize user
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
@@ -31,7 +30,6 @@ const CourseDetailsPage = () => {
     }
   }, [navigate]);
 
-  // Load course data
   useEffect(() => {
     if (id && user) {
       fetchCourseData();
@@ -41,19 +39,15 @@ const CourseDetailsPage = () => {
   const fetchCourseData = async () => {
     setIsLoading(true);
     try {
-      // Fetch course details
       const courseRes = await fetch(`${import.meta.env.VITE_API_URL}/courses/${id}`);
       if (courseRes.ok) {
         const courseData = await courseRes.json();
         setCourse(courseData);
-        
-        // Fetch projects for this course
+
         await fetchProjects();
-        
-        // Fetch comments for this course
+
         await fetchComments();
-        
-        // Fetch student's submissions for this course
+
         await fetchSubmissions();
       }
     } catch (error) {
@@ -97,11 +91,8 @@ const CourseDetailsPage = () => {
 
   const fetchSubmissions = async () => {
     if (!user) return;
-    
+
     try {
-      // Get student's submissions for this course
-      // You need to add this endpoint in SubmissionController:
-      // @GetMapping("/student/{studentId}/course/{courseId}")
       const response = await fetch(`${import.meta.env.VITE_API_URL}/submissions/student/${user.id}/course/${id}`);
       if (response.ok) {
         const submissionsData = await response.json();
@@ -147,7 +138,7 @@ const CourseDetailsPage = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/comments/course/${id}/author/${user.id}`, 
+        `${import.meta.env.VITE_API_URL}/comments/course/${id}/author/${user.id}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
@@ -176,7 +167,6 @@ const CourseDetailsPage = () => {
     }
   };
 
-  // Map projects to assignments format with submission status
   const assignments = projects.map(project => {
     const submission = submissions.find(sub => sub.projet?.id === project.id);
     return {
@@ -208,7 +198,7 @@ const CourseDetailsPage = () => {
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
         <div className="text-center text-white">
           <h2 className="text-2xl mb-2">Course Not Found</h2>
-          <button 
+          <button
             onClick={() => navigate('/modules')}
             className="text-cyan-400 hover:text-cyan-300"
           >
@@ -221,13 +211,13 @@ const CourseDetailsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 font-sans text-white selection:bg-cyan-500 selection:text-white relative overflow-hidden">
-      
+
       <MoroccanPattern rotate={false} />
       <Navbar role="student" />
 
       <div className="relative z-10 container mx-auto px-6 pt-8 pb-20">
-        <button 
-          onClick={() => navigate('/modules')} 
+        <button
+          onClick={() => navigate('/modules')}
           className="inline-flex items-center text-cyan-400 hover:text-cyan-300 mb-8 transition-colors group text-sm font-medium"
         >
           <svg className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -236,14 +226,14 @@ const CourseDetailsPage = () => {
 
         {/* Course Header */}
         <div className="relative overflow-hidden bg-slate-900/50 border border-white/10 rounded-3xl p-8 mb-10 flex flex-col md:flex-row items-center md:items-start gap-8 backdrop-blur-md shadow-xl">
-           <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-70"></div>
-           <div className="relative z-10">
+          <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-70"></div>
+          <div className="relative z-10">
             <div className="w-24 h-24 rounded-full p-[2px] bg-gradient-to-br from-blue-500 to-cyan-400">
               <div className="w-full h-full rounded-full bg-slate-900 overflow-hidden">
-                <img 
-                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${course.instructeur?.nom || 'Instructor'}`} 
-                  alt="Instructor" 
-                  className="w-full h-full object-cover" 
+                <img
+                  src={`https://api.dicebear.com/7.x/initials/svg?seed=${course.instructeur?.nom || 'Instructor'}`}
+                  alt="Instructor"
+                  className="w-full h-full object-cover"
                 />
               </div>
             </div>
@@ -261,9 +251,9 @@ const CourseDetailsPage = () => {
         {/* Tabs */}
         <div className="flex space-x-8 mb-8 border-b border-white/10 pb-1 overflow-x-auto">
           {['assignments', 'discussion'].map((tab) => (
-            <button 
-              key={tab} 
-              onClick={() => setActiveTab(tab)} 
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
               className={`pb-3 text-lg font-medium transition-all relative capitalize whitespace-nowrap ${activeTab === tab ? 'text-cyan-400' : 'text-gray-400 hover:text-white'}`}
             >
               {tab === 'discussion' ? 'Class Stream' : 'Assignments'}
@@ -293,8 +283,8 @@ const CourseDetailsPage = () => {
 
                     <div className="flex items-center gap-4 w-full md:w-auto">
                       {assignment.status === 'Submitted' ? (
-                        <div 
-                          onClick={() => handleOpenFeedbackModal(assignment)} 
+                        <div
+                          onClick={() => handleOpenFeedbackModal(assignment)}
                           className="flex items-center gap-4 bg-slate-900/50 px-4 py-2 rounded-lg border border-white/5 cursor-pointer hover:border-cyan-500/40 hover:bg-slate-900/80 transition-all group/score"
                         >
                           <div className="relative h-12 w-12 flex items-center justify-center">
@@ -312,8 +302,8 @@ const CourseDetailsPage = () => {
                           </div>
                         </div>
                       ) : (
-                        <button 
-                          onClick={() => handleOpenSubmitModal(assignment)} 
+                        <button
+                          onClick={() => handleOpenSubmitModal(assignment)}
                           className="w-full md:w-auto px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-all shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m-4 4v12" /></svg>
@@ -336,17 +326,17 @@ const CourseDetailsPage = () => {
             <div className="max-w-3xl mx-auto">
               <div className="bg-slate-800/50 border border-white/10 rounded-xl p-4 mb-8 focus-within:border-cyan-500/50 transition-colors shadow-lg">
                 <form onSubmit={handlePostComment}>
-                  <textarea 
-                    value={newMessage} 
-                    onChange={(e) => setNewMessage(e.target.value)} 
-                    placeholder="Share something with your class..." 
+                  <textarea
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Share something with your class..."
                     className="w-full bg-transparent text-white placeholder-slate-500 resize-none focus:outline-none min-h-[80px]"
                   ></textarea>
                   <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5">
                     <button type="button" className="text-gray-400 hover:text-cyan-400 transition-colors"><i className="fas fa-paperclip"></i></button>
-                    <button 
-                      type="submit" 
-                      disabled={!newMessage.trim()} 
+                    <button
+                      type="submit"
+                      disabled={!newMessage.trim()}
                       className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-1.5 rounded-lg text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       Post
@@ -376,11 +366,10 @@ const CourseDetailsPage = () => {
                         )}
                         <span className="text-xs text-gray-600">{comment.date}</span>
                       </div>
-                      <div className={`p-4 rounded-2xl text-sm leading-relaxed border ${
-                        comment.role === 'instructor' 
-                          ? 'bg-blue-900/20 border-blue-500/20 text-blue-100 rounded-tl-none' 
-                          : 'bg-slate-800/80 border-white/5 text-gray-300 rounded-tl-none'
-                      }`}>
+                      <div className={`p-4 rounded-2xl text-sm leading-relaxed border ${comment.role === 'instructor'
+                        ? 'bg-blue-900/20 border-blue-500/20 text-blue-100 rounded-tl-none'
+                        : 'bg-slate-800/80 border-white/5 text-gray-300 rounded-tl-none'
+                        }`}>
                         {comment.text}
                       </div>
                     </div>
@@ -396,20 +385,20 @@ const CourseDetailsPage = () => {
         </div>
       </div>
 
-      <SubmitAssignmentModal 
-        isOpen={isSubmitModalOpen} 
-        onClose={() => setIsSubmitModalOpen(false)} 
+      <SubmitAssignmentModal
+        isOpen={isSubmitModalOpen}
+        onClose={() => setIsSubmitModalOpen(false)}
         assignment={selectedAssignment}
         studentId={user?.id}
         onSuccess={() => {
-          fetchSubmissions(); // Refresh submissions after submission
-          fetchCourseData(); // Refresh course data
+          fetchSubmissions();
+          fetchCourseData();
         }}
       />
 
-      <FeedbackModal 
-        isOpen={isFeedbackModalOpen} 
-        onClose={() => setIsFeedbackModalOpen(false)} 
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={() => setIsFeedbackModalOpen(false)}
         assignment={selectedAssignment}
       />
 

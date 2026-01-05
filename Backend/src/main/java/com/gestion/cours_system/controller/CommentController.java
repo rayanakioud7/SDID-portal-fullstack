@@ -14,24 +14,23 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-    // POST: Comment on a Course (General Discussion)
-    // The text is sent as a raw string body
+    // POST: Comment on a Course
     @PostMapping("/course/{courseId}/author/{authorId}")
-    public Comment addCommentToCourse(@PathVariable Long courseId, 
-                                      @PathVariable Long authorId, 
-                                      @RequestBody String texte) {
+    public Comment addCommentToCourse(@PathVariable Long courseId,
+            @PathVariable Long authorId,
+            @RequestBody String texte) {
         return commentService.addCommentToCourse(courseId, authorId, texte);
     }
 
-    // POST: Comment on a Submission (Feedback)
+    // POST: Comment on a Submission (Feedback), par exemple: great work
     @PostMapping("/submission/{submissionId}/author/{authorId}")
-    public Comment addCommentToSubmission(@PathVariable Long submissionId, 
-                                          @PathVariable Long authorId, 
-                                          @RequestBody String texte) {
+    public Comment addCommentToSubmission(@PathVariable Long submissionId,
+            @PathVariable Long authorId,
+            @RequestBody String texte) {
         return commentService.addCommentToSubmission(submissionId, authorId, texte);
     }
 
-    // GET: See comments for a course
+    // GET: See comments in modules
     @GetMapping("/course/{courseId}")
     public List<Comment> getCommentsByCourse(@PathVariable Long courseId) {
         return commentService.getCommentsByCourse(courseId);

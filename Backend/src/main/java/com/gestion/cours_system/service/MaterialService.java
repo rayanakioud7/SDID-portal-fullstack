@@ -27,17 +27,16 @@ public class MaterialService {
 
     private final String UPLOAD_DIR = "uploads/materials/";
 
-    public Material uploadMaterial(Long courseId, Long uploadedById, String name, MultipartFile file) throws IOException {
+    public Material uploadMaterial(Long courseId, Long uploadedById, String name, MultipartFile file)
+            throws IOException {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
-        
+
         Utilisateur uploadedBy = utilisateurRepository.findById(uploadedById)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Create upload directory if it doesn't exist
         Files.createDirectories(Paths.get(UPLOAD_DIR));
 
-        // Generate unique filename
         String originalFilename = file.getOriginalFilename();
         String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
         String uniqueFilename = UUID.randomUUID().toString() + fileExtension;
@@ -67,19 +66,17 @@ public class MaterialService {
     public void deleteMaterial(Long materialId) throws IOException {
         Material material = materialRepository.findById(materialId)
                 .orElseThrow(() -> new RuntimeException("Material not found"));
-        
-        // Delete file from disk
-        Path filePath = Paths.get(material.getFileUrl().substring(1)); // Remove leading '/'
+
+        Path filePath = Paths.get(material.getFileUrl().substring(1));
         Files.deleteIfExists(filePath);
-        
-        // Delete from database
+
         materialRepository.delete(material);
     }
 
     public Material incrementDownloadCount(Long materialId) {
         Material material = materialRepository.findById(materialId)
                 .orElseThrow(() -> new RuntimeException("Material not found"));
-        
+
         material.setDownloadCount(material.getDownloadCount() + 1);
         return materialRepository.save(material);
     }

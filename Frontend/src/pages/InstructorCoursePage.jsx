@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import MoroccanPattern from '../components/MoroccanPattern'; 
+import MoroccanPattern from '../components/MoroccanPattern';
 import Navbar from '../components/Navbar';
 
-// --- GRADING MODAL ---
+// grading modal
 const GradingModal = ({ isOpen, onClose, submission, onSubmitGrade }) => {
   const [grade, setGrade] = useState(submission?.note || '');
   const [feedback, setFeedback] = useState(submission?.commentairesInstructeur || '');
@@ -18,7 +18,7 @@ const GradingModal = ({ isOpen, onClose, submission, onSubmitGrade }) => {
 
   const handleSubmit = async () => {
     if (!grade || !submission) return;
-    
+
     setIsLoading(true);
     try {
       await onSubmitGrade(submission.id, grade, feedback);
@@ -32,7 +32,7 @@ const GradingModal = ({ isOpen, onClose, submission, onSubmitGrade }) => {
   };
 
   if (!isOpen || !submission) return null;
-  
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
@@ -42,41 +42,41 @@ const GradingModal = ({ isOpen, onClose, submission, onSubmitGrade }) => {
           <p className="text-sm text-blue-200/60">{submission.etudiant?.nom} • {submission.projet?.titre}</p>
         </div>
         <div className="p-6 space-y-4">
-           <div>
-             <label className="block text-sm font-medium text-gray-400 mb-1">Grade (/20)</label>
-             <input 
-               type="number" 
-               min="0" 
-               max="20" 
-               value={grade}
-               onChange={(e) => setGrade(e.target.value)}
-               className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none transition-colors" 
-               placeholder="16" 
-             />
-           </div>
-           <div>
-             <label className="block text-sm font-medium text-gray-400 mb-1">Feedback</label>
-             <textarea 
-               value={feedback}
-               onChange={(e) => setFeedback(e.target.value)}
-               className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none h-32 resize-none" 
-               placeholder="Great work, but..."
-             ></textarea>
-           </div>
-           <button 
-             onClick={handleSubmit}
-             disabled={isLoading}
-             className="w-full py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors shadow-lg shadow-blue-900/20"
-           >
-             {isLoading ? 'Submitting...' : 'Submit Grade'}
-           </button>
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Grade (/20)</label>
+            <input
+              type="number"
+              min="0"
+              max="20"
+              value={grade}
+              onChange={(e) => setGrade(e.target.value)}
+              className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none transition-colors"
+              placeholder="16"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Feedback</label>
+            <textarea
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none h-32 resize-none"
+              placeholder="Great work, but..."
+            ></textarea>
+          </div>
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="w-full py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors shadow-lg shadow-blue-900/20"
+          >
+            {isLoading ? 'Submitting...' : 'Submit Grade'}
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-// --- CREATE PROJECT MODAL ---
+// create project modal
 const CreateProjectModal = ({ isOpen, onClose, courseId, onSubmit }) => {
   const [titre, setTitre] = useState('');
   const [description, setDescription] = useState('');
@@ -86,7 +86,7 @@ const CreateProjectModal = ({ isOpen, onClose, courseId, onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!titre.trim()) return;
-    
+
     setIsLoading(true);
     try {
       await onSubmit({ titre, description, dateLimite: deadline });
@@ -103,7 +103,7 @@ const CreateProjectModal = ({ isOpen, onClose, courseId, onSubmit }) => {
   };
 
   if (!isOpen) return null;
-  
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
@@ -116,43 +116,43 @@ const CreateProjectModal = ({ isOpen, onClose, courseId, onSubmit }) => {
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">Project Title</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={titre}
                   onChange={(e) => setTitre(e.target.value)}
-                  className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none transition-colors" 
-                  placeholder="Mini-Projet: ETL Pipeline" 
+                  className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none transition-colors"
+                  placeholder="Mini-Projet: ETL Pipeline"
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
-                <textarea 
+                <textarea
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none h-32 resize-none" 
+                  className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none h-32 resize-none"
                   placeholder="Project requirements and objectives..."
                 ></textarea>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">Deadline</label>
-                <input 
-                  type="datetime-local" 
+                <input
+                  type="datetime-local"
                   value={deadline}
                   onChange={(e) => setDeadline(e.target.value)}
-                  className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none transition-colors" 
+                  className="w-full bg-slate-950 border border-white/10 rounded-lg px-4 py-2 text-white focus:border-cyan-500 outline-none transition-colors"
                 />
               </div>
             </div>
             <div className="flex gap-3 mt-6">
-              <button 
+              <button
                 type="button"
                 onClick={onClose}
                 className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg transition-colors"
               >
                 Cancel
               </button>
-              <button 
+              <button
                 type="submit"
                 disabled={isLoading}
                 className="flex-1 py-3 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors shadow-lg shadow-blue-900/20"
@@ -176,8 +176,8 @@ const InstructorCoursePage = () => {
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [selectedProjectFilter, setSelectedProjectFilter] = useState("All Projects");
   const [newMessage, setNewMessage] = useState("");
-  
-  // State for data
+
+
   const [course, setCourse] = useState(null);
   const [projects, setProjects] = useState([]);
   const [submissions, setSubmissions] = useState([]);
@@ -185,7 +185,6 @@ const InstructorCoursePage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  // Initialize user
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
@@ -195,7 +194,6 @@ const InstructorCoursePage = () => {
     }
   }, [navigate]);
 
-  // Load all data for the course
   useEffect(() => {
     if (id && user) {
       fetchCourseData();
@@ -205,19 +203,16 @@ const InstructorCoursePage = () => {
   const fetchCourseData = async () => {
     setIsLoading(true);
     try {
-      // Fetch course details - FIXED URL
+
       const courseRes = await fetch(`${import.meta.env.VITE_API_URL}/courses/${id}`);
       if (courseRes.ok) {
         const courseData = await courseRes.json();
         setCourse(courseData);
-        
-        // Fetch projects for this course
+
         await fetchProjects();
-        
-        // Fetch comments for this course
+
         await fetchComments();
-        
-        // Fetch submissions for this course
+
         await fetchSubmissions();
       } else {
         console.error("Failed to fetch course:", courseRes.status);
@@ -248,7 +243,6 @@ const InstructorCoursePage = () => {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/comments/course/${id}`);
       if (response.ok) {
         const commentsData = await response.json();
-        // Map the backend response to frontend format
         const formattedComments = commentsData.map(comment => ({
           id: comment.id,
           user: comment.auteur?.nom || 'Unknown',
@@ -268,30 +262,27 @@ const InstructorCoursePage = () => {
 
   const fetchSubmissions = async () => {
     try {
-      // Get all projects first
       const projectsResponse = await fetch(`${import.meta.env.VITE_API_URL}/projects/course/${id}`);
       if (!projectsResponse.ok) return;
-      
+
       const projectsData = await projectsResponse.json();
-      
-      // For each project, fetch submissions
+
       const allSubmissions = [];
       for (const project of projectsData) {
         try {
-          // Note: You need to implement this endpoint in SubmissionController
           const response = await fetch(`${import.meta.env.VITE_API_URL}/submissions/project/${project.id}`);
           if (response.ok) {
             const projectSubmissions = await response.json();
             allSubmissions.push(...projectSubmissions.map(sub => ({
               ...sub,
-              projet: project // Add project info to each submission
+              projet: project
             })));
           }
         } catch (error) {
           console.error(`Error fetching submissions for project ${project.id}:`, error);
         }
       }
-      
+
       setSubmissions(allSubmissions);
     } catch (error) {
       console.error("Error fetching submissions:", error);
@@ -304,7 +295,7 @@ const InstructorCoursePage = () => {
       const date = new Date(dateString);
       const now = new Date();
       const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
-      
+
       if (diffInHours < 1) return 'Just now';
       if (diffInHours < 24) return `${diffInHours}h ago`;
       if (diffInHours < 168) return `${Math.floor(diffInHours / 24)}d ago`;
@@ -314,13 +305,12 @@ const InstructorCoursePage = () => {
     }
   };
 
-  // Handle project creation
   const handleCreateProject = async (projectData) => {
     if (!user || !id) return;
-    
+
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/projects/course/${id}/instructor/${user.id}`, 
+        `${import.meta.env.VITE_API_URL}/projects/course/${id}/instructor/${user.id}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -347,7 +337,6 @@ const InstructorCoursePage = () => {
   // Handle grade submission
   const handleSubmitGrade = async (submissionId, grade, feedback) => {
     try {
-      // Use the commentairesInstructeur field
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/submissions/${submissionId}/grade?note=${grade}&commentairesInstructeur=${encodeURIComponent(feedback)}`,
         {
@@ -357,7 +346,6 @@ const InstructorCoursePage = () => {
 
       if (response.ok) {
         alert('Grade submitted successfully!');
-        // Refresh submissions
         fetchSubmissions();
       } else {
         throw new Error('Failed to submit grade');
@@ -375,7 +363,7 @@ const InstructorCoursePage = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/comments/course/${id}/author/${user.id}`, 
+        `${import.meta.env.VITE_API_URL}/comments/course/${id}/author/${user.id}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain' },
@@ -385,7 +373,6 @@ const InstructorCoursePage = () => {
 
       if (response.ok) {
         const newComment = await response.json();
-        // Add the new comment to the list
         setComments(prev => [...prev, {
           id: newComment.id,
           user: user.nom,
@@ -410,9 +397,8 @@ const InstructorCoursePage = () => {
     setIsGradingOpen(true);
   };
 
-  // Filter submissions by selected project
-  const filteredSubmissions = selectedProjectFilter === "All Projects" 
-    ? submissions 
+  const filteredSubmissions = selectedProjectFilter === "All Projects"
+    ? submissions
     : submissions.filter(sub => sub.projet?.titre === selectedProjectFilter);
 
   if (isLoading) {
@@ -432,7 +418,7 @@ const InstructorCoursePage = () => {
         <div className="text-center text-white">
           <h2 className="text-2xl mb-2">Course Not Found</h2>
           <p className="text-gray-400 mb-4">Course ID: {id}</p>
-          <button 
+          <button
             onClick={() => navigate('/professor-dashboard')}
             className="text-cyan-400 hover:text-cyan-300"
           >
@@ -449,12 +435,12 @@ const InstructorCoursePage = () => {
       <Navbar />
 
       <div className="relative z-10 container mx-auto px-6 pt-8 pb-20">
-        
+
         {/* HEADER */}
         <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4 animate-fadeIn">
           <div>
-            <button 
-              onClick={() => navigate('/professor-dashboard')} 
+            <button
+              onClick={() => navigate('/professor-dashboard')}
               className="text-gray-500 hover:text-cyan-400 mb-4 flex items-center gap-2 transition-colors text-sm"
             >
               <i className="fas fa-arrow-left"></i> Back to Dashboard
@@ -466,7 +452,7 @@ const InstructorCoursePage = () => {
             <p className="text-gray-400 text-sm italic">{course.code} • Academic Year 2025-2026</p>
           </div>
           <div className="flex gap-3">
-            <button 
+            <button
               onClick={() => setIsCreateProjectModalOpen(true)}
               className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-cyan-900/20 flex items-center gap-2 transition-transform active:scale-95"
             >
@@ -479,8 +465,8 @@ const InstructorCoursePage = () => {
         {/* TABS */}
         <div className="flex space-x-8 mb-8 border-b border-white/10 pb-1 overflow-x-auto">
           {['submissions', 'discussion'].map((tab) => (
-            <button 
-              key={tab} 
+            <button
+              key={tab}
               onClick={() => setActiveTab(tab)}
               className={`pb-3 text-lg font-medium transition-all relative capitalize whitespace-nowrap ${activeTab === tab ? 'text-cyan-400' : 'text-gray-400 hover:text-white'}`}
             >
@@ -491,13 +477,13 @@ const InstructorCoursePage = () => {
         </div>
 
         <div className="min-h-[400px]">
-            
+
           {/* --- TAB 1: SUBMISSIONS --- */}
           {activeTab === 'submissions' && (
             <div className="space-y-4 animate-fadeIn">
               <div className="flex justify-between items-center mb-6">
                 <div className="relative">
-                  <select 
+                  <select
                     value={selectedProjectFilter}
                     onChange={(e) => setSelectedProjectFilter(e.target.value)}
                     className="appearance-none bg-slate-800 border border-white/10 text-white py-2 pl-4 pr-10 rounded-lg focus:outline-none focus:border-cyan-500 cursor-pointer font-medium"
@@ -530,9 +516,9 @@ const InstructorCoursePage = () => {
                             {sub.projet?.titre || 'Unknown Project'} • {formatDate(sub.dateSoumission)}
                           </p>
                           {sub.fichierUrl && (
-                            <a 
-                              href={sub.fichierUrl} 
-                              target="_blank" 
+                            <a
+                              href={sub.fichierUrl}
+                              target="_blank"
                               rel="noopener noreferrer"
                               className="text-xs text-cyan-400 hover:text-cyan-300 mt-1 inline-block"
                             >
@@ -547,7 +533,7 @@ const InstructorCoursePage = () => {
                             {sub.note}/20
                           </div>
                         ) : (
-                          <button 
+                          <button
                             onClick={() => openGrading(sub)}
                             className="px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-colors shadow-lg shadow-blue-900/20"
                           >
@@ -559,7 +545,7 @@ const InstructorCoursePage = () => {
                   ))
                 ) : (
                   <div className="text-center py-10 text-gray-500 italic">
-                    {projects.length === 0 
+                    {projects.length === 0
                       ? "No projects created yet. Click 'Create Project' to add your first assignment!"
                       : "No submissions found. Students will appear here once they submit their work."}
                   </div>
@@ -574,19 +560,19 @@ const InstructorCoursePage = () => {
               {/* Comment Input Box */}
               <div className="bg-slate-800/50 border border-white/10 rounded-xl p-4 mb-8 focus-within:border-cyan-500/50 transition-colors shadow-lg">
                 <form onSubmit={handlePostComment}>
-                  <textarea 
+                  <textarea
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Post an announcement or reply to students..." 
+                    placeholder="Post an announcement or reply to students..."
                     className="w-full bg-transparent text-white placeholder-slate-500 resize-none focus:outline-none min-h-[80px]"
                   ></textarea>
                   <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/5">
                     <button type="button" className="text-gray-400 hover:text-cyan-400 transition-colors">
                       <i className="fas fa-paperclip"></i>
                     </button>
-                    <button 
-                      type="submit" 
-                      disabled={!newMessage.trim()} 
+                    <button
+                      type="submit"
+                      disabled={!newMessage.trim()}
                       className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-1.5 rounded-lg text-sm font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       Post
@@ -623,11 +609,10 @@ const InstructorCoursePage = () => {
                           )}
                           <span className="text-xs text-gray-600 ml-1">{comment.date}</span>
                         </div>
-                        <div className={`p-4 rounded-2xl text-sm leading-relaxed border ${
-                          comment.role === 'instructor' 
-                            ? 'bg-blue-900/20 border-blue-500/20 text-blue-100 rounded-tl-none' 
-                            : 'bg-slate-800/80 border-white/5 text-gray-300 rounded-tl-none'
-                        }`}>
+                        <div className={`p-4 rounded-2xl text-sm leading-relaxed border ${comment.role === 'instructor'
+                          ? 'bg-blue-900/20 border-blue-500/20 text-blue-100 rounded-tl-none'
+                          : 'bg-slate-800/80 border-white/5 text-gray-300 rounded-tl-none'
+                          }`}>
                           {comment.text}
                         </div>
                       </div>
@@ -643,16 +628,16 @@ const InstructorCoursePage = () => {
           )}
         </div>
       </div>
-      
+
       {/* Modals */}
-      <GradingModal 
-        isOpen={isGradingOpen} 
-        onClose={() => setIsGradingOpen(false)} 
+      <GradingModal
+        isOpen={isGradingOpen}
+        onClose={() => setIsGradingOpen(false)}
         submission={selectedSubmission}
         onSubmitGrade={handleSubmitGrade}
       />
-      
-      <CreateProjectModal 
+
+      <CreateProjectModal
         isOpen={isCreateProjectModalOpen}
         onClose={() => setIsCreateProjectModalOpen(false)}
         courseId={id}

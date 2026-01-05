@@ -52,10 +52,10 @@ public class FileUploadController {
             String fileUrl = "/uploads/" + fileName;
             return ResponseEntity.ok(fileUrl);
         } catch (IOException e) {
-            e.printStackTrace(); // Log the error
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Failed to upload file: " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace(); // Log any other error
+            e.printStackTrace();
             return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
         }
     }

@@ -1,8 +1,7 @@
-// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MoroccanPattern from '../components/MoroccanPattern';
-import authService from '../services/auth'; // Import the auth service
+import authService from '../services/auth';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -12,43 +11,42 @@ const LoginPage = () => {
   const [error, setError] = useState('');
 
   const handleLogin = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
-  setError('');
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
-  try {
-    const userData = await authService.login(email, password);
-    
-    window.dispatchEvent(new Event("storage"));
+    try {
+      const userData = await authService.login(email, password);
 
-    if (userData.role === 'ADMINISTRATEUR') {
-      navigate('/admin-dashboard');
-    } else if (userData.role === 'INSTRUCTEUR') {
-      navigate('/professor-dashboard');
-    } else if (userData.role === 'ETUDIANT') {
-      navigate('/modules');
-    } else {
-      navigate('/');
+      window.dispatchEvent(new Event("storage"));
+
+      if (userData.role === 'ADMINISTRATEUR') {
+        navigate('/admin-dashboard');
+      } else if (userData.role === 'INSTRUCTEUR') {
+        navigate('/professor-dashboard');
+      } else if (userData.role === 'ETUDIANT') {
+        navigate('/modules');
+      } else {
+        navigate('/');
+      }
+
+    } catch (err) {
+      console.error("Login Error Details:", err);
+      setError(err.response?.data?.message || err.message || "Login failed. Server not reachable.");
+    } finally {
+      setIsLoading(false);
     }
-    
-  } catch (err) {
-    console.error("Login Error Details:", err); // 🔍 See this in F12 Console
-    // Show the actual error message or a fallback
-    setError(err.response?.data?.message || err.message || "Login failed. Server not reachable.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-4 font-sans relative overflow-hidden">
-      
+
       {/* Background Pattern */}
       <MoroccanPattern />
 
       {/* Glass Card */}
       <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-2xl shadow-2xl w-full max-w-md relative z-10 animate-fadeIn">
-        
+
         {/* Logo Icon */}
         <div className="flex justify-center mb-6">
           <div className="h-14 w-14 bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-blue-500/30">
@@ -73,8 +71,8 @@ const LoginPage = () => {
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1.5 ml-1">Email Address</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white placeholder-gray-500 transition-all"
@@ -83,7 +81,7 @@ const LoginPage = () => {
               disabled={isLoading}
             />
           </div>
-          
+
           {/* Password */}
           <div>
             <div className="flex justify-between items-center mb-1.5 ml-1">
@@ -92,8 +90,8 @@ const LoginPage = () => {
                 Forgot password?
               </Link>
             </div>
-            <input 
-              type="password" 
+            <input
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-slate-900/60 border border-white/10 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-white placeholder-gray-500 transition-all"
@@ -104,8 +102,8 @@ const LoginPage = () => {
           </div>
 
           {/* Sign In Button */}
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={isLoading}
             className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold rounded-xl shadow-lg shadow-blue-600/20 transform hover:scale-[1.01] transition-all duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >

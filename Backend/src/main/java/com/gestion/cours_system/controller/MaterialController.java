@@ -25,9 +25,9 @@ public class MaterialController {
 
     @PostMapping("/course/{courseId}/uploader/{uploaderId}")
     public Material uploadMaterial(@PathVariable Long courseId,
-                                   @PathVariable Long uploaderId,
-                                   @RequestParam String name,
-                                   @RequestParam MultipartFile file) throws IOException {
+            @PathVariable Long uploaderId,
+            @RequestParam String name,
+            @RequestParam MultipartFile file) throws IOException {
         return materialService.uploadMaterial(courseId, uploaderId, name, file);
     }
 
@@ -39,14 +39,14 @@ public class MaterialController {
     @GetMapping("/{materialId}/download")
     public ResponseEntity<Resource> downloadMaterial(@PathVariable Long materialId) throws IOException {
         Material material = materialService.incrementDownloadCount(materialId);
-        
-        Path filePath = Paths.get(material.getFileUrl().substring(1)); // Remove leading '/'
+
+        Path filePath = Paths.get(material.getFileUrl().substring(1));
         Resource resource = new UrlResource(filePath.toUri());
 
         if (resource.exists() || resource.isReadable()) {
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, 
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=\"" + material.getName() + "\"")
                     .body(resource);
         } else {

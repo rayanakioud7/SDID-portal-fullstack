@@ -1,7 +1,7 @@
 package com.gestion.cours_system.service;
 
-import com.gestion.cours_system.entity.*; // Import all entities
-import com.gestion.cours_system.repository.*; // Import all repos
+import com.gestion.cours_system.entity.*;
+import com.gestion.cours_system.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -20,8 +20,8 @@ public class SubmissionService {
 
     public Submission saveSubmission(Long etudiantId, Long projectId, String fichierUrl) {
         Utilisateur etudiant = utilisateurRepository.findById(etudiantId)
-            .orElseThrow(() -> new RuntimeException("Student not found"));
-            
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
         // role Etudiant?
         if (etudiant.getRole() != Role.ETUDIANT) {
             throw new RuntimeException("Error: Only students can submit work.");
@@ -29,9 +29,9 @@ public class SubmissionService {
 
         // Check if Project exists
         Project project = projectRepository.findById(projectId)
-            .orElseThrow(() -> new RuntimeException("Project not found"));
+                .orElseThrow(() -> new RuntimeException("Project not found"));
 
-        //  Did they already submit?
+        // Did they already submit?
         if (submissionRepository.existsByEtudiantIdAndProjetId(etudiantId, projectId)) {
             throw new RuntimeException("Error: You have already submitted this project.");
         }
@@ -42,14 +42,14 @@ public class SubmissionService {
         submission.setProjet(project);
         submission.setFichierUrl(fichierUrl);
         submission.setDateSoumission(LocalDateTime.now());
-        
+
         return submissionRepository.save(submission);
     }
 
     public List<Submission> getSubmissionsByStudentAndCourse(Long studentId, Long courseId) {
-    return submissionRepository.findByEtudiantId(studentId).stream()
-        .filter(submission -> submission.getProjet().getCours().getId().equals(courseId))
-        .collect(Collectors.toList());
+        return submissionRepository.findByEtudiantId(studentId).stream()
+                .filter(submission -> submission.getProjet().getCours().getId().equals(courseId))
+                .collect(Collectors.toList());
     }
 
     public List<Submission> getSubmissionsByStudent(Long studentId) {

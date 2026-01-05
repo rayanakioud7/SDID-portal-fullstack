@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import MoroccanPattern from "../components/MoroccanPattern";
 import Navbar from '../components/Navbar';
 
-// --- 1. 3D TILT COMPONENT ---
+// 3D card tilt
 const TiltCard = ({ children, className, glowColor = "cyan" }) => {
   const cardRef = useRef(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
@@ -50,7 +50,7 @@ const TiltCard = ({ children, className, glowColor = "cyan" }) => {
   );
 };
 
-// --- 2. FLOATING ICONS ---
+// floating icons
 const FloatingItem = ({ style, type }) => {
   const renderIcon = () => {
     switch (type) {
@@ -74,7 +74,7 @@ function HomePage() {
   const [typedText, setTypedText] = useState("");
   const fullText = "Meets Innovation";
 
-  // --- BRIDGE TO BACKEND (Keep this exactly as is) ---
+
   const handleProtectedNavigation = (destination) => {
     const storedUser = JSON.parse(localStorage.getItem("user") || "null");
 
@@ -136,10 +136,6 @@ function HomePage() {
       {/* Navbar - Kept intact */}
       <Navbar />
 
-      {/* 🚀 FIX APPLIED HERE: 
-         1. Removed '-mt-10' (Negative margin was causing the overlap)
-         2. Added 'pt-12' (Padding Top) to push content down safely
-      */}
       <main className="relative z-10 container mx-auto px-6 flex-grow flex flex-col justify-center items-center text-center pt-12">
 
         <h1 className="text-6xl md:text-8xl font-extrabold mb-8 tracking-tight">
@@ -155,7 +151,7 @@ function HomePage() {
           Access your curriculum, submit projects, and track academic performance.
         </p>
 
-        {/* --- THE 3 PILLARS (Navigation Logic Preserved) --- */}
+        {/* --- THE 3 PILLARS --- */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
 
           {/* Card 1: MODULES */}

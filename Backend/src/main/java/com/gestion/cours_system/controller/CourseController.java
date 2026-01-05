@@ -14,25 +14,25 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    // POST: Create a course (Must provide Instructor ID in URL)
+    // POST: Create a course
     @PostMapping("/instructeur/{instructeurId}")
     public Course createCourse(@RequestBody Course course, @PathVariable Long instructeurId) {
         return courseService.createCourse(course, instructeurId);
     }
 
-    // GET: List all courses
+    // GET: List all courses to be shown for either student or professor
     @GetMapping
     public List<Course> getAllCourses() {
         return courseService.getAllCourses();
     }
 
-    // GET: Get only courses taught by a specific instructor
+    // GET: Get only courses taught by a specific instructor, used for filters
     @GetMapping("/instructeur/{instructeurId}")
     public List<Course> getCoursesByInstructor(@PathVariable Long instructeurId) {
         return courseService.getCoursesByInstructor(instructeurId);
     }
 
-    // NEW: Get a single course by ID
+    // Get a single course by ID
     @GetMapping("/{courseId}")
     public Course getCourseById(@PathVariable Long courseId) {
         return courseService.getCourseById(courseId);

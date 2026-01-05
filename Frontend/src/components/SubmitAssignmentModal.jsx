@@ -8,7 +8,6 @@ const SubmitAssignmentModal = ({ isOpen, onClose, assignment, studentId, onSucce
 
   if (!isOpen || !assignment) return null;
 
-  // --- Drag & Drop Handlers ---
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
@@ -32,64 +31,62 @@ const SubmitAssignmentModal = ({ isOpen, onClose, assignment, studentId, onSucce
     }
   };
 
-const handleSubmit = async () => {
-  if (!file || !studentId || !assignment) return;
+  const handleSubmit = async () => {
+    if (!file || !studentId || !assignment) return;
 
-  setIsUploading(true);
-  
-  try {
-    // 1. Upload the file
-    const formData = new FormData();
-    formData.append("file", file);
-    
-    const uploadResponse = await fetch(
-      `${import.meta.env.VITE_API_URL}/upload`,
-      {
-        method: 'POST',
-        body: formData,
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+
+      if (!uploadResponse.ok) {
+        throw new Error('File upload failed');
       }
-    );
 
-    if (!uploadResponse.ok) {
-      throw new Error('File upload failed');
-    }
-    
-    const fileUrl = await uploadResponse.text();
-    
-    // 2. Submit the submission with the file URL
-    const submitResponse = await fetch(
-      `${import.meta.env.VITE_API_URL}/submissions/student/${studentId}/project/${assignment.id}?fichierUrl=${encodeURIComponent(fileUrl)}`,
-      {
-        method: 'POST',
+      const fileUrl = await uploadResponse.text();
+
+      const submitResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/submissions/student/${studentId}/project/${assignment.id}?fichierUrl=${encodeURIComponent(fileUrl)}`,
+        {
+          method: 'POST',
+        }
+      );
+
+      if (submitResponse.ok) {
+        alert("Project submitted successfully!");
+        if (onSuccess) onSuccess();
+        onClose();
+        setFile(null);
+      } else {
+        throw new Error('Failed to submit project');
       }
-    );
-
-    if (submitResponse.ok) {
-      alert("Project submitted successfully!");
-      if (onSuccess) onSuccess();
-      onClose();
-      setFile(null);
-    } else {
-      throw new Error('Failed to submit project');
+    } catch (error) {
+      console.error('Error submitting project:', error);
+      alert(error.message || 'Failed to submit project');
+    } finally {
+      setIsUploading(false);
     }
-  } catch (error) {
-    console.error('Error submitting project:', error);
-    alert(error.message || 'Failed to submit project');
-  } finally {
-    setIsUploading(false);
-  }
-};
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div 
+      <div
         className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       ></div>
 
       {/* Modal Card */}
       <div className="relative w-full max-w-lg bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-fadeIn scale-100">
-        
+
         {/* Header */}
         <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
           <h3 className="text-xl font-bold text-white">Submit Assignment</h3>
@@ -106,22 +103,21 @@ const handleSubmit = async () => {
 
           {/* Drag & Drop Zone */}
           {!file && (
-            <div 
+            <div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer ${
-                isDragging 
-                  ? 'border-blue-500 bg-blue-500/10' 
+              className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center transition-all duration-200 cursor-pointer ${isDragging
+                  ? 'border-blue-500 bg-blue-500/10'
                   : 'border-white/20 hover:border-blue-400 hover:bg-white/5'
-              }`}
+                }`}
             >
-              <input 
-                type="file" 
-                id="file-upload" 
-                className="hidden" 
+              <input
+                type="file"
+                id="file-upload"
+                className="hidden"
                 onChange={handleFileSelect}
-                accept=".pdf,.zip,.rar,.doc,.docx,.ppt,.pptx,.txt" 
+                accept=".pdf,.zip,.rar,.doc,.docx,.ppt,.pptx,.txt"
               />
               <label htmlFor="file-upload" className="cursor-pointer w-full h-full flex flex-col items-center">
                 <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-4 text-blue-400">
@@ -159,7 +155,7 @@ const handleSubmit = async () => {
                 <span className="text-white">{uploadProgress}%</span>
               </div>
               <div className="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
-                <div 
+                <div
                   className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${uploadProgress}%` }}
                 ></div>
@@ -170,21 +166,20 @@ const handleSubmit = async () => {
 
         {/* Footer Buttons */}
         <div className="p-6 border-t border-white/10 bg-white/5 flex justify-end gap-3">
-          <button 
+          <button
             onClick={onClose}
             className="px-5 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/5 transition-colors font-medium"
             disabled={isUploading}
           >
             Cancel
           </button>
-          <button 
+          <button
             onClick={handleSubmit}
             disabled={!file || isUploading}
-            className={`px-5 py-2 rounded-lg font-bold transition-all shadow-lg shadow-blue-900/20 ${
-              !file || isUploading
+            className={`px-5 py-2 rounded-lg font-bold transition-all shadow-lg shadow-blue-900/20 ${!file || isUploading
                 ? 'bg-slate-700 text-gray-500 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-500 text-white hover:scale-105'
-            }`}
+              }`}
           >
             {isUploading ? 'Submitting...' : 'Submit Project'}
           </button>

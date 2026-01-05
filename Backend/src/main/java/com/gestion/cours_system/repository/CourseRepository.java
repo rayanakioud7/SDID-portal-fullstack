@@ -10,6 +10,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     // Finds all courses taught by a specific instructor
     List<Course> findByInstructeurId(Long instructeurId);
 
-    // Finds a course by its unique code (e.g., "MATH101")
+    // Finds a course by its unique code (exemple: MATH101)
     Optional<Course> findByCode(String code);
 }
