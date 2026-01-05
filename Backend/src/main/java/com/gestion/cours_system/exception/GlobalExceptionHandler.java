@@ -12,28 +12,27 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. Handle Validation Errors (e.g., Bad Email, Empty Password)
+    // Handle Validation Errors (ex: Bad Email, Empty Password)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        
+
         // Extract the specific field name and the error message
-        ex.getBindingResult().getFieldErrors().forEach(error -> 
-            errors.put(error.getField(), error.getDefaultMessage())
-        );
-        
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    // 2. Handle Logic Errors (e.g., "User not found", "Already submitted")
+    // Handle Logic Errors (ex: "User not found", "Already submitted")
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeErrors(RuntimeException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
-    
-    // 3. Handle Generic "Crash" Errors (e.g., Database down)
+
+    // Handle Generic "Crash" Errors (par exemple: Database down)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGeneralErrors(Exception ex) {
         Map<String, String> error = new HashMap<>();

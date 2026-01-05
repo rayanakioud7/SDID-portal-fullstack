@@ -17,14 +17,10 @@ const LoginPage = () => {
   setError('');
 
   try {
-    // 1. Perform Login
     const userData = await authService.login(email, password);
     
-    // 🚨 THE CRITICAL FIX: Trigger the Navbar update
-    // This tells all components listening to 'storage' to refresh their user state
     window.dispatchEvent(new Event("storage"));
 
-    // 2. Redirect based on role (Verify these match your Backend Enum exactly)
     if (userData.role === 'ADMINISTRATEUR') {
       navigate('/admin-dashboard');
     } else if (userData.role === 'INSTRUCTEUR') {
@@ -32,12 +28,13 @@ const LoginPage = () => {
     } else if (userData.role === 'ETUDIANT') {
       navigate('/modules');
     } else {
-      // Fallback if role is unexpected
       navigate('/');
     }
     
-  } catch (error) {
-    // ... your existing error handling ...
+  } catch (err) {
+    console.error("Login Error Details:", err); // 🔍 See this in F12 Console
+    // Show the actual error message or a fallback
+    setError(err.response?.data?.message || err.message || "Login failed. Server not reachable.");
   } finally {
     setIsLoading(false);
   }

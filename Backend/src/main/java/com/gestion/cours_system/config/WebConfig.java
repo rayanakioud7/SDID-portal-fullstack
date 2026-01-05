@@ -10,6 +10,7 @@ public class WebConfig implements WebMvcConfigurer{
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        // standard way to handle connections in Spring and bridge backend with frontend
         registry.addMapping("/api/**")
                 .allowedOrigins("http://localhost:5173") 
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
@@ -19,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer{
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Serve uploaded files from the uploads directory
+        //  uploaded files
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:uploads/");
     }
