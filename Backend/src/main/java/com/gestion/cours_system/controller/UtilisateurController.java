@@ -42,7 +42,6 @@ public class UtilisateurController {
 	@PutMapping("/{id}/role")
 	public ResponseEntity<?> updateRole(@PathVariable Long id, @RequestParam String role) {
 		try {
-			// Convert String to Enum
 			com.gestion.cours_system.entity.Role newRole = com.gestion.cours_system.entity.Role.valueOf(role);
 
 			Utilisateur updatedUser = utilisateurService.updateUserRole(id, newRole);
