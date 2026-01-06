@@ -67,4 +67,32 @@ public class UtilisateurController {
 				.map(ResponseEntity::ok)
 				.orElse(ResponseEntity.notFound().build());
 	}
+
+	// PUT: /api/users/{id} - Update general user info (Email, Name, etc.)
+	@PutMapping("/{id}")
+	public ResponseEntity<Utilisateur> updateUser(@PathVariable Long id, @RequestBody Utilisateur userDetails) {
+		return utilisateurService.getUtilisateurById(id)
+				.map(existingUser -> {
+					existingUser.setEmail(userDetails.getEmail());
+					existingUser.setNom(userDetails.getNom());
+					existingUser.setPrenom(userDetails.getPrenom());
+
+					Utilisateur updatedUser = utilisateurService.saveUtilisateur(existingUser);
+					return ResponseEntity.ok(updatedUser);
+				})
+				.orElse(ResponseEntity.notFound().build());
+	}
+
+	// DELETE: /api/users/{id}
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteUtilisateur(@PathVariable Long id) {
+		try {
+			utilisateurService.deleteUtilisateur(id);
+			return ResponseEntity.ok("User deleted successfully");
+		} catch (RuntimeException e) {
+			return ResponseEntity.notFound().build();
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("Error deleting user");
+		}
+	}
 }
