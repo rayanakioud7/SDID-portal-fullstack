@@ -83,7 +83,7 @@ const RegisterPage = () => {
                 onChange={handleChange}
                 required
                 className="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-2.5 focus:border-cyan-500 outline-none transition-colors"
-                placeholder="Rayan"
+                placeholder="Name"
               />
             </div>
             <div>
@@ -109,7 +109,7 @@ const RegisterPage = () => {
               onChange={handleChange}
               required
               className="w-full bg-slate-800 border border-white/10 rounded-lg px-4 py-2.5 focus:border-cyan-500 outline-none transition-colors"
-              placeholder="rayan@fst.ac.ma"
+              placeholder="email@fst.ac.ma"
             />
           </div>
 

@@ -1,10 +1,8 @@
 // src/services/auth.js
 import axios from 'axios';
 
-// Spring Boot typically runs on port 8080 by default
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
-// Create axios instance with default config
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -12,7 +10,6 @@ const api = axios.create({
   },
 });
 
-// Add token to requests if it exists
 api.interceptors.request.use(
   (config) => {
     const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -31,23 +28,18 @@ const authService = {
   async login(email, password) {
     try {
       const response = await api.post('/auth/login', { email, password });
-      
+
       if (response.data) {
-        // 1. Store user data in localStorage
         localStorage.setItem('user', JSON.stringify(response.data));
-        
-        // 2. Handle token if your backend provides one
+
         if (response.data.token) {
-           localStorage.setItem('token', response.data.token);
-           api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+          localStorage.setItem('token', response.data.token);
+          api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
         }
-        
-        // 🚨 THE CRITICAL SYNC FIX:
-        // This manually triggers the 'storage' event so the Navbar.jsx 
-        // listener catches the change immediately without a page refresh.
+
         window.dispatchEvent(new Event("storage"));
       }
-      
+
       return response.data;
     } catch (error) {
       console.error('Login error:', error);
@@ -66,7 +58,7 @@ const authService = {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     delete api.defaults.headers.common['Authorization'];
-    
+
     // Notify Navbar to show "Log In/Sign Up" again
     window.dispatchEvent(new Event("storage"));
   },
